@@ -47,7 +47,7 @@ Kickstart Guide:
 
     If you don't know what this means, type the following:
       - <escape key>
-      - :
+      - 
       - Tutor
       - <enter key>
 
@@ -91,9 +91,10 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
+--
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
@@ -137,7 +138,7 @@ vim.opt.timeoutlen = 300
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
-vim.opt.splitbelow = true
+vim.opt.splitbelow = false
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -149,7 +150,7 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
@@ -193,6 +194,8 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
+vim.keymap.set('n', '<C-g>', ':NERDTreeToggle<CR>', { desc = 'Toggle Nerd Tree' })
+
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
@@ -224,9 +227,101 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
+--
+
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  { 'nvim-tree/nvim-web-devicons' },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme 'catppuccin-macchiato'
+    end,
+  },
+  { 'mattn/emmet-vim' },
+  { 'preservim/nerdtree' },
+  { 'tpope/vim-surround' },
+  { 'ervandew/supertab' },
+  {
+    'goolord/alpha-nvim',
+    event = 'VimEnter', -- load plugin after all configuration is set
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+
+    config = function()
+      local alpha = require 'alpha'
+      local dashboard = require 'alpha.themes.dashboard'
+
+      dashboard.section.header.val = {
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                     ]],
+        [[       ████ ██████           █████      ██                     ]],
+        [[      ███████████             █████                             ]],
+        [[      █████████ ███████████████████ ███   ███████████   ]],
+        [[     █████████  ███    █████████████ █████ ██████████████   ]],
+        [[    █████████ ██████████ █████████ █████ █████ ████ █████   ]],
+        [[  ███████████ ███    ███ █████████ █████ █████ ████ █████  ]],
+        [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+        [[                                                                       ]],
+      }
+
+      _Gopts = {
+        position = 'center',
+        hl = 'Type',
+        -- wrap = "overflow";
+      }
+
+      -- Set menu
+      dashboard.section.buttons.val = {
+        -- dashboard.button("SPC j", "󰈚   Restore Session", ":SessionRestore<cr>"),
+        dashboard.button('e', '   New file', ':ene <BAR> startinsert <CR>'),
+        dashboard.button('f', '   Find file', ':cd $HOME/dotfiles | Telescope find_files<CR>'),
+        dashboard.button('g', '󰱼   Find word', ':Telescope live_grep<CR>'),
+        dashboard.button('r', '   Recent', ':Telescope oldfiles<CR>'),
+        dashboard.button('c', '   Config', ':e $MYVIMRC <CR>'),
+        dashboard.button('m', '󱌣   Mason', ':Mason<CR>'),
+        dashboard.button('l', '󰒲   Lazy', ':Lazy<CR>'),
+        dashboard.button('u', '󰂖   Update plugins', "<cmd>lua require('lazy').sync()<CR>"),
+        dashboard.button('q', '   Quit NVIM', ':qa<CR>'),
+      }
+
+      local function footer()
+        return 'Mohammed Babiker Babai'
+      end
+      dashboard.section.footer.val = footer()
+
+      dashboard.opts.opts.noautocmd = true
+      alpha.setup(dashboard.opts)
+
+      require('alpha').setup(dashboard.opts)
+
+      -- vim.api.nvim_create_autocmd("User", {
+      -- 	pattern = "LazyVimStarted",
+      -- 	callback = function()
+      -- 		local stats = require("lazy").stats()
+      -- 		local count = (math.floor(stats.startuptime * 100) / 100)
+      -- 		dashboard.section.footer.val = {
+      -- 			"󱐌 " .. stats.count .. " plugins loaded in " .. count .. " ms",
+      -- 			" ",
+      -- 			"      Mohammed Babiker Babai",
+      -- 		}
+      -- 		pcall(vim.cmd.AlphaRedraw)
+      -- 	end,
+      -- })
+    end,
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -277,8 +372,6 @@ require('lazy').setup({
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
-
       -- Document existing key chains
       require('which-key').register {
         ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
@@ -550,8 +643,11 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
+        gopls = {},
+        tsserver = {},
+        html = {},
+        golangci_lint_ls = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -641,7 +737,7 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -666,12 +762,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -751,23 +847,23 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+  --{ -- You can easily change to a different colorscheme.
+  -- Change the name of the colorscheme plugin below, and then
+  -- change the command in the config to whatever the name of that colorscheme is.
+  --
+  -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --'folke/tokyonight.nvim',
+  --priority = 1000, -- Make sure to load this before all the other start plugins.
+  --init = function()
+  -- Load the colorscheme here.
+  -- Like many other themes, this one has different styles, and you could load
+  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --vim.cmd.colorscheme 'tokyonight-moon'
 
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
+  -- You can configure highlights by doing something like:
+  --vim.cmd.hi 'Comment gui=none'
+  --end,
+  --},
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -775,7 +871,7 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
+      -- Better Around/Inside textobjcs
       --
       -- Examples:
       --  - va)  - [V]isually select [A]round [)]paren
@@ -813,7 +909,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'javascript', 'typescript' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -854,7 +950,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
