@@ -94,7 +94,7 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
---
+
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
@@ -194,7 +194,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
-vim.keymap.set('n', '<C-g>', ':NERDTreeToggle<CR>', { desc = 'Toggle Nerd Tree' })
+vim.keymap.set('n', '<C-a>', ':NERDTreeToggle<CR>', { desc = 'Toggle Nerd Tree' })
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -228,23 +228,75 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 --
+vim.opt.encoding = 'utf-8'
+-- make guibg transparent
+vim.api.nvim_command [[
+    augroup ChangeBackgroudColour
+        autocmd colorscheme * :hi normal guibg=NONE
+    augroup END
+]]
+vim.o.termguicolors = true
 
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  { 'nvim-tree/nvim-web-devicons' },
+  { 'tpope/vim-fugitive' }, -- Git commands in Neovim
+  { 'ryanoasis/vim-devicons' },
+  --{
+  --  'catppuccin/nvim',
+  --  name = 'catppuccin',
+  --  priority = 1000,
+  --  config = function()
+  --    vim.cmd.colorscheme 'catppuccin-macchiato'
+  --  end,
+  --},
   {
-    'catppuccin/nvim',
-    name = 'catppuccin',
+    'rose-pine/neovim',
+    name = 'rose-pine',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'catppuccin-macchiato'
+      vim.cmd.colorscheme 'rose-pine-moon'
     end,
   },
   { 'mattn/emmet-vim' },
   { 'preservim/nerdtree' },
   { 'tpope/vim-surround' },
   { 'ervandew/supertab' },
+  { 'github/copilot.vim' },
+  -- NOTE: Plugins can also be added by using a table,
+  -- with the first argument being the link and the following
+  -- keys can be used to configure plugin behavior/loading/etc.
+  --
+  -- Use `opts = {}` to force a plugin to be loaded.
+  --
+  --  This is equivalent to:
+  --    require('Comment').setup({})
+
+  -- "gc" to comment visual regions/lines
+  { 'numToStr/Comment.nvim', opts = {} },
+
+  -- Here is a more advanced example where we pass configuration
+  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
+  --    require('gitsigns').setup({ ... })
+  --
+  -- See `:help gitsigns` to understand what the configuration keys do
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+    },
+    config = function()
+      require('gitsigns').setup()
+      vim.keymap.set('n', '<leader>gh', ':Gitsigns preview_hunk<CR>', { desc = 'Toggle Git [H]ighlights' })
+      vim.keymap.set('n', '<leader>gb', ':Gitsigns toggle_current_line_blame<CR>', { desc = 'Toggle Git [B]lame' })
+    end,
+  },
   {
     'goolord/alpha-nvim',
     event = 'VimEnter', -- load plugin after all configuration is set
@@ -287,20 +339,15 @@ require('lazy').setup({
       dashboard.section.buttons.val = {
         -- dashboard.button("SPC j", "󰈚   Restore Session", ":SessionRestore<cr>"),
         dashboard.button('e', '   New file', ':ene <BAR> startinsert <CR>'),
-        dashboard.button('f', '   Find file', ':cd $HOME/dotfiles | Telescope find_files<CR>'),
+        dashboard.button('f', '󰮗   Find file', ':cd $HOME/dotfiles | Telescope find_files<CR>'),
         dashboard.button('g', '󰱼   Find word', ':Telescope live_grep<CR>'),
         dashboard.button('r', '   Recent', ':Telescope oldfiles<CR>'),
         dashboard.button('c', '   Config', ':e $MYVIMRC <CR>'),
         dashboard.button('m', '󱌣   Mason', ':Mason<CR>'),
         dashboard.button('l', '󰒲   Lazy', ':Lazy<CR>'),
         dashboard.button('u', '󰂖   Update plugins', "<cmd>lua require('lazy').sync()<CR>"),
-        dashboard.button('q', '   Quit NVIM', ':qa<CR>'),
+        dashboard.button('q', '󰩈  Quit NVIM', ':qa<CR>'),
       }
-
-      local function footer()
-        return 'Mohammed Babiker Babai'
-      end
-      dashboard.section.footer.val = footer()
 
       dashboard.opts.opts.noautocmd = true
       alpha.setup(dashboard.opts)
@@ -322,37 +369,6 @@ require('lazy').setup({
       -- })
     end,
   },
-
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --
-  --  This is equivalent to:
-  --    require('Comment').setup({})
-
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
-
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
