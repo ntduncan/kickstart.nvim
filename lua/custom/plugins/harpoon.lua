@@ -1,9 +1,13 @@
 local harpoon = require 'harpoon'
-harpoon:setup {}
+harpoon:setup()
 
 vim.keymap.set('n', '<leader>a', function()
   harpoon:list():add()
 end, { desc = 'Add current file to Harpoon' })
+
+vim.keymap.set('n', '<leader>x', function()
+  harpoon:list():remove()
+end, { desc = 'Remove current file to Harpoon' })
 
 -- Toggle previous & next buffers stored within Harpoon list
 vim.keymap.set('n', '<C-j>', function()
