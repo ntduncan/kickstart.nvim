@@ -1,11 +1,11 @@
 local harpoon = require 'harpoon'
 harpoon:setup()
 
-vim.keymap.set('n', '<leader>a', function()
+vim.keymap.set('n', '<leader>ha', function()
   harpoon:list():add()
 end, { desc = 'Add current file to Harpoon' })
 
-vim.keymap.set('n', '<leader>x', function()
+vim.keymap.set('n', '<leader>hr', function()
   harpoon:list():remove()
 end, { desc = 'Remove current file to Harpoon' })
 
@@ -16,6 +16,11 @@ end)
 vim.keymap.set('n', '<C-k>', function()
   harpoon:list():next()
 end)
+vim.keymap.set('n', '<leader>hc', function()
+  for _, item in ipairs(harpoon:list().items) do
+    harpoon:list():remove(item)
+  end
+end, { desc = 'Clear Harpoon Board' })
 
 -- basic telescope configuration
 local conf = require('telescope.config').values
@@ -37,6 +42,6 @@ local function toggle_telescope(harpoon_files)
     :find()
 end
 
-vim.keymap.set('n', '<leader>h', function()
+vim.keymap.set('n', '<leader>hh', function()
   toggle_telescope(harpoon:list())
 end, { desc = 'Open harpoon window' })
