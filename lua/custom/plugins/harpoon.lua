@@ -45,3 +45,9 @@ end
 vim.keymap.set('n', '<leader>hh', function()
   toggle_telescope(harpoon:list())
 end, { desc = 'Open harpoon window' })
+
+return {
+  'ThePrimeagen/harpoon',
+  branch = 'harpoon2',
+  dependencies = { 'nvim-lua/plenary.nvim' },
+}

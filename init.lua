@@ -179,27 +179,51 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-fugitive' }, -- Git commands in Neovim
   { 'ryanoasis/vim-devicons' },
-  --{
-  --  'catppuccin/nvim',
-  --  name = 'catppuccin',
-  --  priority = 1000,
-  --  config = function()
-  --    vim.cmd.colorscheme 'catppuccin-macchiato'
-  --  end,
-  --},
-  {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'rose-pine-moon'
-    end,
-  },
   { 'mattn/emmet-vim' },
   { 'preservim/nerdtree' },
   { 'tpope/vim-surround' },
   { 'ervandew/supertab' },
-  { 'github/copilot.vim' },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme 'catppuccin-mocha'
+    end,
+  },
+  --[=====[{
+    'ellisonleao/gruvbox.nvim',
+    priority = 1000,
+    config = function()
+      require('gruvbox').setup {
+        terminal_colors = true, -- add neovim terminal colors
+        undercurl = true,
+        underline = true,
+        bold = true,
+        italic = {
+          strings = true,
+          emphasis = true,
+          comments = true,
+          operators = false,
+          folds = true,
+        },
+        strikethrough = true,
+        invert_selection = false,
+        invert_signs = false,
+        invert_tabline = false,
+        invert_intend_guides = false,
+        inverse = true, -- invert background for search, diffs, statuslines and errors
+        contrast = '', -- can be "hard", "soft" or empty string
+        palette_overrides = {},
+        overrides = {},
+        dim_inactive = false,
+        transparent_mode = false,
+      }
+      vim.o.background = 'dark'
+
+      vim.cmd [[colorscheme gruvbox]]
+    end,
+  },--]=====]
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
@@ -604,7 +628,6 @@ require('lazy').setup({
         gopls = {},
         tsserver = {},
         html = {},
-        golangci_lint_ls = {},
         pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -816,7 +839,7 @@ require('lazy').setup({
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --vim.cmd.colorscheme 'tokyonight-moon'
+  --vim.cmd.colorscheme 'tokyonight-storm'
 
   -- You can configure highlights by doing something like:
   --vim.cmd.hi 'Comment gui=none'
