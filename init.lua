@@ -1,7 +1,6 @@
 --[[
 
 =====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
 ========         .----------------------.   | === |          ========
@@ -10,7 +9,7 @@
 ========         ||   KICKSTART.NVIM   ||   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
+========         ||:vimbtw             ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
 ========         `"")----------------(""`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
@@ -27,6 +26,9 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.api.nvim_set_keymap('', '<kEnter>', '<Enter>', {})
+vim.api.nvim_set_keymap('i', '<kEnter>', '<Enter>', {})
+vim.api.nvim_set_keymap('c', '<kEnter>', '<Enter>', {})
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -184,14 +186,47 @@ require('lazy').setup({
   { 'tpope/vim-surround' },
   { 'ervandew/supertab' },
   {
+    'EdenEast/nightfox.nvim',
+    priority = 1000,
+    config = function()
+      local ops = {
+        terminal_colors = true,
+        transparent = true,
+        undercurl = true,
+        underline = true,
+        bold = true,
+        italic = {
+          strings = true,
+          emphasis = true,
+          comments = true,
+          operators = false,
+          folds = true,
+        },
+        strikethrough = true,
+        invert_selection = false,
+        invert_signs = false,
+        invert_tabline = false,
+        invert_intend_guides = false,
+        inverse = true, -- invert background for search, diffs, statuslines and errors
+        contrast = '', -- can be "hard", "soft" or empty string
+        palette_overrides = {},
+        overrides = {},
+        dim_inactive = false,
+        transparent_mode = false,
+      }
+      require('nightfox').setup(ops)
+      vim.cmd 'colorscheme terafox'
+    end,
+  },
+  --[===[{ 
     'catppuccin/nvim',
     name = 'catppuccin',
     priority = 1000,
     config = function()
       vim.cmd.colorscheme 'catppuccin-mocha'
     end,
-  },
-  --[=====[{
+  }, --]===]
+  --[===[   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
     config = function()
@@ -223,7 +258,28 @@ require('lazy').setup({
 
       vim.cmd [[colorscheme gruvbox]]
     end,
-  },--]=====]
+  },--]===]
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+    window = {
+      width = 130,
+      backdrop = 0.90,
+    },
+    config = function()
+      vim.keymap.set('n', '<leader>z', ':ZenMode<CR>', { desc = 'Turn on ZenMode' })
+    end,
+    plugins = {
+      kitty = {
+        enabled = false,
+        font = '+4',
+      },
+    },
+  },
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
@@ -275,13 +331,6 @@ require('lazy').setup({
       local dashboard = require 'alpha.themes.dashboard'
 
       dashboard.section.header.val = {
-        [[                                                                       ]],
-        [[                                                                       ]],
-        [[                                                                       ]],
-        [[                                                                       ]],
-        [[                                                                       ]],
-        [[                                                                       ]],
-        [[                                                                       ]],
         [[                                                                     ]],
         [[       ████ ██████           █████      ██                     ]],
         [[      ███████████             █████                             ]],
@@ -292,7 +341,7 @@ require('lazy').setup({
         [[ ██████  █████████████████████ ████ █████ █████ ████ ██████ ]],
         [[                                                                       ]],
         [[                                                                       ]],
-        [[                                                                       ]],
+        [[█████████████████████████████████████████████████████████████████████]],
       }
 
       _Gopts = {
@@ -305,14 +354,14 @@ require('lazy').setup({
       dashboard.section.buttons.val = {
         -- dashboard.button("SPC j", "󰈚   Restore Session", ":SessionRestore<cr>"),
         dashboard.button('e', '   New file', ':ene <BAR> startinsert <CR>'),
-        dashboard.button('f', '󰮗   Find file', ':cd $HOME/dotfiles | Telescope find_files<CR>'),
+        dashboard.button('f', '󰮗   Find file', ':Telescope find_files<CR>'),
         dashboard.button('g', '󰱼   Find word', ':Telescope live_grep<CR>'),
         dashboard.button('r', '   Recent', ':Telescope oldfiles<CR>'),
         dashboard.button('c', '   Config', ':e $MYVIMRC <CR>'),
         dashboard.button('m', '󱌣   Mason', ':Mason<CR>'),
         dashboard.button('l', '󰒲   Lazy', ':Lazy<CR>'),
         dashboard.button('u', '󰂖   Update plugins', "<cmd>lua require('lazy').sync()<CR>"),
-        dashboard.button('q', '󰩈  Quit NVIM', ':qa<CR>'),
+        dashboard.button('q', '󰩈   Quit NVIM', ':qa<CR>'),
       }
 
       dashboard.opts.opts.noautocmd = true
@@ -355,13 +404,54 @@ require('lazy').setup({
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
+      require('which-key').setup {
+        icons = {
+          -- set icon mappings to true if you have a Nerd Font
+          mappings = vim.g.have_nerd_font,
+          -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+          -- default whick-key.nvim defined Nerd Font icons, otherwise define a string table
+          keys = vim.g.have_nerd_font and {} or {
+            Up = '<Up> ',
+            Down = '<Down> ',
+            Left = '<Left> ',
+            Right = '<Right> ',
+            C = '<C-…> ',
+            M = '<M-…> ',
+            D = '<D-…> ',
+            S = '<S-…> ',
+            CR = '<CR> ',
+            Esc = '<Esc> ',
+            ScrollWheelDown = '<ScrollWheelDown> ',
+            ScrollWheelUp = '<ScrollWheelUp> ',
+            NL = '<NL> ',
+            BS = '<BS> ',
+            Space = '<Space> ',
+            Tab = '<Tab> ',
+            F1 = '<F1>',
+            F2 = '<F2>',
+            F3 = '<F3>',
+            F4 = '<F4>',
+            F5 = '<F5>',
+            F6 = '<F6>',
+            F7 = '<F7>',
+            F8 = '<F8>',
+            F9 = '<F9>',
+            F10 = '<F10>',
+            F11 = '<F11>',
+            F12 = '<F12>',
+          },
+        },
+
+        -- Document existing key chains
+        spec = {
+          { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
+          { '<leader>d', group = '[D]ocument' },
+          { '<leader>r', group = '[R]ename' },
+          { '<leader>s', group = '[S]earch' },
+          { '<leader>w', group = '[W]orkspace' },
+          { '<leader>t', group = '[T]oggle' },
+          { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        },
       }
     end,
   },
@@ -448,7 +538,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sD', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
@@ -626,17 +717,16 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         gopls = {},
-        tsserver = {},
         html = {},
         pyright = {},
+        ts_ls = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
         --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        -- But for many setups, the LSP (`ts_ls`) will work just fine
         --
 
         lua_ls = {
@@ -693,7 +783,7 @@ require('lazy').setup({
       {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_fallback = true }
+          require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
         desc = '[F]ormat buffer',
@@ -706,9 +796,15 @@ require('lazy').setup({
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
+        local lsp_format_opt
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          lsp_format_opt = 'never'
+        else
+          lsp_format_opt = 'fallback'
+        end
         return {
           timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+          lsp_format = lsp_format_opt,
         }
       end,
       formatters_by_ft = {
@@ -718,7 +814,7 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
+        javascript = { 'prettierd', 'prettier' },
       },
     },
   },
@@ -890,7 +986,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'javascript', 'typescript' },
+      ensure_installed = { 'bash', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'javascript', 'typescript', 'go' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -902,21 +998,6 @@ require('lazy').setup({
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
-    config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-
-      -- Prefer git instead of curl in order to improve connectivity in some environments
-      require('nvim-treesitter.install').prefer_git = true
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
-
-      -- There are additional nvim-treesitter modules that you can use to interact
-      -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
-      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-    end,
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
