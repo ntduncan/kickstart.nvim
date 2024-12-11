@@ -34,6 +34,38 @@ local neovimTitle = {
   [[█████████████████████████████████████████████████████████████████████]],
 }
 
+local frog = {
+  [[                                                                   ;&                               ]],
+  [[                       .+ ::+x&xx&                               &+&x+&&&&:                         ]],
+  [[                        &&&& :$&$&                            &&&:&::&&&&&&                         ]],
+  [[                    x$:;x xX&& :+&$&&                       &&$&;. &X$+x  xx$$                      ]],
+  [[                  :  &&&   x  & ;&:&&&+ .          .$  ;;  &:& .   &      &&&&:+                    ]],
+  [[                 :&&&& ::     x  &;xx;&;x&;&&:x&&.& Xx x xX&;;: ;: & ;  &&&&&&&&:                   ]],
+  [[                $&&&$   && x; x    &&x:+x.&x$;   x &&$X.;:&;::+;+::&x&&&&&&&&&&&&                   ]],
+  [[                &&&&&&&&&&&&&&&  ++ .$&&&: X&&&&&&&:  &;&;:xX$$X::.&&&&&&&&&&&&&&                   ]],
+  [[                +&&&&&&&  &x&&X::x :::.::;     :x  x    ;;&&&$&+:::&&x;$  &&&&&&&                   ]],
+  [[                X &&&    x  x&.:::: ::.:: &&&&&;$&$;&X&&&&&&$x&x:::$&x ;X   $&&x&                   ]],
+  [[                 x;$;  & x  &&:   . .::: XX   +$:& $  .$&&&&&$+&:::&&& +&&$xx&$$                    ]],
+  [[                  XxxxX  x&&X&: ; ;: ::;$$.  ; xX      ;&&$&&X:&;x::&&&& :&&&&&                     ]],
+  [[                 .+&&x&&&&&   . ;  ;: :   :      ; X ;:;$X&$$X&X&x;+X:::&&&&&&& &                   ]],
+  [[                :: $&&&::.  : : ;:  .. .:.;  X +X x+;X+:$;&xXx&X$xx::X$:::.x$x$& &                  ]],
+  [[                ;+ : :::;::::::..;::::: :..     + x.;:xx$$x+X:&:;x;&+&&$&&&&&&  &&                  ]],
+  [[               .x&x ;: . .::..;. +.   &x.     ;:::::.  :::+;:$&X&X:$:.&::        &&                 ]],
+  [[                $    :;;:;:.   .: .:      ..::.....:::::.::::::;;X:&xx;+$&&$&:                      ]],
+  [[                 .:::     :::.: .   :::::::::.. ;:     ::.++$++:::::.:.:;::::x:X                    ]],
+  [[                &::::;+XXXX$$XXX$$&&XXxxXX$$x$$X&$$&$XXXXX$&&$&X$X$&&&&&&&&&&&&&&&&                 ]],
+  [[                & x$&X:                                                           &                 ]],
+  [[                x+          .:+xxxxx$&&$Xx$&$$$$&&&&&&&$$$$$&&&&&&&&&&&$$xxxxxx&&&+:                ]],
+  [[                 .&&&&&&&&&&&&&&&&&&$$Xx;;xXXXXxxxxxxxxxxxxxxxxxxxxxXX$Xx$&&&$Xx;&   &X             ]],
+  [[              ;:&..xx$:   . :;xxxxXXX$$$&$&XXX$XXXXXXXXXXXXXxx$+++;++:;;XxXX$&&x&X&+.x.x:           ]],
+  [[           x&+:;::  :     . x+x+XXXX+XxX$XXX$X$XX$X$XXxX$XxXXXxxxXx+;++.:;+XxX &:&&&&&&$&&          ]],
+  [[          ;  ..;::&         ;+x&$x+;.:.+.;;;;;;xxxx+xXXXxxxXxXxxXxXXxX:X+x;  .$+&&&&&&&&X$&&        ]],
+  [[       ;x+x:::: .;::     +.XX$$&X+    .    :.::;+;+++++;;++;;++xXXXXxXxx+::.x&&x;:+&&&&&XX+xx       ]],
+  [[      $+.:::.$&&..   x$+ :+X$$+;. :     .;.:::;+;;;;;;;;;;++;+xx;x$Xxx$X$&X$$x x&&:&&&&&:++&x$;     ]],
+  [[    xx: xx   x:.:&$     x$$X     :;+xxxXXxxxxxxXxxxx+++xxxxxXxxXX+x++;:+;+xx+X&.: &&:::+:::&&:++    ]],
+  [[   :    :   .::                                    ..+:;;+. .. :. ;:;+;;   :      x :&&&&. &x:X;   ]],
+}
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -340,7 +372,21 @@ require('lazy').setup({
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
-      dashboard = { enabled = true },
+      dashboard = {
+        enabled = true,
+        sections = {
+          { section = 'header' },
+          { section = 'keys', gap = 1, padding = 1 },
+          { section = 'startup' },
+          {
+            section = 'terminal',
+            cmd = 'lazygit',
+            pane = 2,
+            indent = 4,
+            height = 30,
+          },
+        },
+      },
       notifier = {
         enabled = true,
         timeout = 3000,
@@ -353,34 +399,7 @@ require('lazy').setup({
           wo = { wrap = true }, -- Wrap notifications
         },
       },
-    },
-    sections = {
-      { section = 'header' },
-      {
-        pane = 2,
-        section = 'terminal',
-        cmd = 'colorscript -e square',
-        height = 5,
-        padding = 1,
-      },
-      { section = 'keys', gap = 1, padding = 1 },
-      { pane = 2, icon = ' ', title = 'Recent Files', section = 'recent_files', indent = 2, padding = 1 },
-      { pane = 2, icon = ' ', title = 'Projects', section = 'projects', indent = 2, padding = 1 },
-      {
-        pane = 2,
-        icon = ' ',
-        title = 'Git Status',
-        section = 'terminal',
-        enabled = function()
-          return Snacks.git.get_root() ~= nil
-        end,
-        cmd = 'hub status --short --branch --renames',
-        height = 5,
-        padding = 1,
-        ttl = 5 * 60,
-        indent = 3,
-      },
-      { section = 'startup' },
+      lazygit = { enabled = true },
     },
     keys = {
       {
@@ -509,6 +528,7 @@ require('lazy').setup({
         end,
       },
     },
+
     init = function()
       vim.api.nvim_create_autocmd('User', {
         pattern = 'VeryLazy',
@@ -561,37 +581,7 @@ require('lazy').setup({
         [[█████████████████████████████████████████████████████████████████████]],
       }
 
-      local frog = {
-        [[                                                                   ;&                               ]],
-        [[                       .+ ::+x&xx&                               &+&x+&&&&:                         ]],
-        [[                        &&&& :$&$&                            &&&:&::&&&&&&                         ]],
-        [[                    x$:;x xX&& :+&$&&                       &&$&;. &X$+x  xx$$                      ]],
-        [[                  :  &&&   x  & ;&:&&&+ .          .$  ;;  &:& .   &      &&&&:+                    ]],
-        [[                 :&&&& ::     x  &;xx;&;x&;&&:x&&.& Xx x xX&;;: ;: & ;  &&&&&&&&:                   ]],
-        [[                $&&&$   && x; x    &&x:+x.&x$;   x &&$X.;:&;::+;+::&x&&&&&&&&&&&&                   ]],
-        [[                &&&&&&&&&&&&&&&  ++ .$&&&: X&&&&&&&:  &;&;:xX$$X::.&&&&&&&&&&&&&&                   ]],
-        [[                +&&&&&&&  &x&&X::x :::.::;     :x  x    ;;&&&$&+:::&&x;$  &&&&&&&                   ]],
-        [[                X &&&    x  x&.:::: ::.:: &&&&&;$&$;&X&&&&&&$x&x:::$&x ;X   $&&x&                   ]],
-        [[                 x;$;  & x  &&:   . .::: XX   +$:& $  .$&&&&&$+&:::&&& +&&$xx&$$                    ]],
-        [[                  XxxxX  x&&X&: ; ;: ::;$$.  ; xX      ;&&$&&X:&;x::&&&& :&&&&&                     ]],
-        [[                 .+&&x&&&&&   . ;  ;: :   :      ; X ;:;$X&$$X&X&x;+X:::&&&&&&& &                   ]],
-        [[                :: $&&&::.  : : ;:  .. .:.;  X +X x+;X+:$;&xXx&X$xx::X$:::.x$x$& &                  ]],
-        [[                ;+ : :::;::::::..;::::: :..     + x.;:xx$$x+X:&:;x;&+&&$&&&&&&  &&                  ]],
-        [[               .x&x ;: . .::..;. +.   &x.     ;:::::.  :::+;:$&X&X:$:.&::        &&                 ]],
-        [[                $    :;;:;:.   .: .:      ..::.....:::::.::::::;;X:&xx;+$&&$&:                      ]],
-        [[                 .:::     :::.: .   :::::::::.. ;:     ::.++$++:::::.:.:;::::x:X                    ]],
-        [[                &::::;+XXXX$$XXX$$&&XXxxXX$$x$$X&$$&$XXXXX$&&$&X$X$&&&&&&&&&&&&&&&&                 ]],
-        [[                & x$&X:                                                           &                 ]],
-        [[                x+          .:+xxxxx$&&$Xx$&$$$$&&&&&&&$$$$$&&&&&&&&&&&$$xxxxxx&&&+:                ]],
-        [[                 .&&&&&&&&&&&&&&&&&&$$Xx;;xXXXXxxxxxxxxxxxxxxxxxxxxxXX$Xx$&&&$Xx;&   &X             ]],
-        [[              ;:&..xx$:   . :;xxxxXXX$$$&$&XXX$XXXXXXXXXXXXXxx$+++;++:;;XxXX$&&x&X&+.x.x:           ]],
-        [[           x&+:;::  :     . x+x+XXXX+XxX$XXX$X$XX$X$XXxX$XxXXXxxxXx+;++.:;+XxX &:&&&&&&$&&          ]],
-        [[          ;  ..;::&         ;+x&$x+;.:.+.;;;;;;xxxx+xXXXxxxXxXxxXxXXxX:X+x;  .$+&&&&&&&&X$&&        ]],
-        [[       ;x+x:::: .;::     +.XX$$&X+    .    :.::;+;+++++;;++;;++xXXXXxXxx+::.x&&x;:+&&&&&XX+xx       ]],
-        [[      $+.:::.$&&..   x$+ :+X$$+;. :     .;.:::;+;;;;;;;;;;++;+xx;x$Xxx$X$&X$$x x&&:&&&&&:++&x$;     ]],
-        [[    xx: xx   x:.:&$     x$$X     :;+xxxXXxxxxxxXxxxx+++xxxxxXxxXX+x++;:+;+xx+X&.: &&:::+:::&&:++    ]],
-        [[   :    :   .::                                    ..+:;;+. .. :. ;:;+;;   :      x :&&&&. &x:X;   ]],
-      }
+      
 
       _Gopts = {
         position = 'center',
