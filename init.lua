@@ -180,6 +180,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 --  See `:help lua-guide-autocommands`
 
 vim.keymap.set('n', '<C-a>', ':NERDTreeToggle<CR>', { desc = 'Toggle Nerd Tree' })
+vim.keymap.set('n', '-', ':Oil --float<CR>', { desc = 'Toggle Oil' })
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -272,6 +273,7 @@ require('lazy').setup({
       vim.cmd.colorscheme 'catppuccin-mocha'
     end,
   }, --]===]
+
   --[===[   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
@@ -305,6 +307,26 @@ require('lazy').setup({
       vim.cmd [[colorscheme gruvbox]]
     end,
   },--]===]
+  -- [===[
+  {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {},
+    config = function()
+      require('oil').setup {
+        default_file_explorer = true,
+        view_options = {
+          show_hidden = true,
+        },
+      }
+    end,
+    -- Optional dependencies
+    --dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    dependencies = { 'nvim-tree/nvim-web-devicons' }, -- use if prefer nvim-web-devicons
+  },
+  -- ]===]
+
   {
     'folke/zen-mode.nvim',
     opts = {
@@ -1300,7 +1322,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
 
