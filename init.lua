@@ -232,7 +232,7 @@ require('lazy').setup({
   { 'preservim/nerdtree' },
   { 'tpope/vim-surround' },
   { 'ervandew/supertab' },
-  {
+  --[===[{
     'EdenEast/nightfox.nvim',
     priority = 1000,
     config = function()
@@ -264,7 +264,7 @@ require('lazy').setup({
       require('nightfox').setup(ops)
       vim.cmd 'colorscheme terafox'
     end,
-  },
+  },--]===]
   --[===[{ 
     'catppuccin/nvim',
     name = 'catppuccin',
@@ -274,7 +274,7 @@ require('lazy').setup({
     end,
   }, --]===]
 
-  --[===[   {
+  {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
     config = function()
@@ -306,8 +306,7 @@ require('lazy').setup({
 
       vim.cmd [[colorscheme gruvbox]]
     end,
-  },--]===]
-  -- [===[
+  },
   {
     'stevearc/oil.nvim',
     ---@module 'oil'
